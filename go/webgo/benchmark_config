@@ -1,0 +1,23 @@
+{
+  "framework": "webgo",
+  "tests": [{
+    "default": {
+      "setup_file": "setup",
+      "json_url": "/json",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "None",
+      "framework": "webgo",
+      "language": "Go",
+      "orm": "Full",
+      "platform": "Go",
+      "webserver": "None",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "webgo",
+      "notes": "",
+      "versus": "go"
+    }
+  }]
+}
