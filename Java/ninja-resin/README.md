@@ -8,6 +8,13 @@ ninja-resin is in essence just a copy of ninja-standalone with different datasou
 That means all stuff you change in ninja-resin should also be applied to 
 ninja-standalone and vice-versa.
 
+## Contributors and thanks
+
+ * The whole TE team for making this possible. Thanks for your time and patience!
+ * kpacha - Kudos to kpacha for creating the initial TE benchmark suite for Ninja!
+ * raphael - Updating and maintenance of Ninja TE benchmarks
+ * martin-g - Many thanks for fixing the issue with resin persistence.xml. Awesome! 
+
 
 ## Test URLs
 ### JSON Encoding Test
