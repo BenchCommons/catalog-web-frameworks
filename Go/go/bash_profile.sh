@@ -4,4 +4,4 @@ export GOROOT=${IROOT}/go
 # Where to find the go executable
 export PATH="$GOROOT/bin:$PATH"
 
-export GOPATH=${FWROOT}/go
+export GOPATH=${TROOT}
