@@ -4,25 +4,37 @@ This is the Play portion of a [benchmarking test suite](../) comparing a variety
 
 ### JSON Encoding Test
 
-* [JSON test source](app/controllers/Application.java)
+* [JSON test controller](app/controllers/Application.java)
 
 ### Data-Store/Database Mapping Test
 
 * [Database test controller](app/controllers/Application.java)
-* [Database test model](app/models/World.java)
+* [Database World test model](app/models/World.java)
+* [Database Fortune test model](app/models/Fortune.java)
+
+### Plain Text Test
+
+* [Plain text test controller](app/controllers/Application.java)
 
 ## Infrastructure Software Versions
 The tests were run with:
 
 * [Java OpenJDK 1.7](http://openjdk.java.net/)
-* [Play 2.3.3](http://http://www.playframework.com/)
+* [Play 2.3.6](http://http://www.playframework.com/)
 
 ## Test URLs
 ### JSON Encoding Test
 
-http://localhost/json
+* http://localhost/json
 
 ### Data-Store/Database Mapping Test
 
-http://localhost/db
-http://localhost/queries?queries=10
+* http://localhost/db
+* http://localhost/queries?queries=10
+* http://localhost/fortunes
+* http://localhost/update?queries=10
+
+### Plain Text Test
+
+* http://localhost/plaintext
+
