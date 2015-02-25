@@ -24,12 +24,12 @@ import java.util.List;
  * @author Eric Nielsen
  */
 public class UpdatesController extends QueriesController {
-    @Override public void index() {
-        List<World> worlds = getWorlds();
+
+    @Override protected List<World> getWorlds() {
+        List<World> worlds = super.getWorlds();
         for (World world : worlds) {
             world.set("randomNumber", randomNumber()).saveIt();
         }
-        view("worlds", worlds);
-        render("/queries/index").contentType("application/json"); //same template
+        return worlds;
     }
 }
