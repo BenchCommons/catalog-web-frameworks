@@ -12,7 +12,6 @@ import aiohttp_jinja2
 import api_hour
 
 from . import endpoints
-from . import servers
 
 LOG = logging.getLogger(__name__)
 
@@ -41,9 +40,7 @@ class Container(api_hour.Container):
                                                   debug=False,
                                                   keep_alive=0,
                                                   access_log=None,
-                                                  access_log_format=self.worker.cfg.access_log_format),
-                servers.yocto_http.YoctoHttpJson,
-                servers.yocto_http.YoctoHttpText]
+                                                  access_log_format=self.worker.cfg.access_log_format)]
 
     @asyncio.coroutine
     def start(self):
