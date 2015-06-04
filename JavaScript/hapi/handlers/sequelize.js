@@ -1,3 +1,6 @@
+// Connects to MySQL using the sequelize driver
+// Handles related routes
+
 var h = require('../helper');
 var Promise = require('bluebird');
 
