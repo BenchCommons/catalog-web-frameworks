@@ -5,17 +5,15 @@ import (
 	"github.com/revel/revel"
 )
 
-var (
-	Driver string
-	Spec   string
-)
-
-func Init() {
-	var found bool
-	if Driver, found = revel.Config.String("db.driver"); !found {
+func InitQbs(maxConn int) {
+	var (
+		found        bool
+		driver, spec string
+	)
+	if driver, found = revel.Config.String("db.driver"); !found {
 		revel.ERROR.Fatal("No db.driver found.")
 	}
-	if Spec, found = revel.Config.String("db.spec"); !found {
+	if spec, found = revel.Config.String("db.spec"); !found {
 		revel.ERROR.Fatal("No db.spec found.")
 	}
 
@@ -25,7 +23,8 @@ func Init() {
 	qbs.TableNameToStructName = noConvert
 	qbs.StructNameToTableName = noConvert
 
-	qbs.Register(Driver, Spec, "", qbs.NewMysql())
+	qbs.Register(driver, spec, "", qbs.NewMysql())
+	qbs.ChangePoolSize(maxConn)
 }
 
 func noConvert(s string) string { return s }
