@@ -2,52 +2,13 @@ package controllers
 
 import (
 	"math/rand"
-	"runtime"
 	"sort"
-
-	"benchmark/app/db"
 
 	"github.com/coocood/qbs"
 	"github.com/revel/revel"
 )
 
-type MessageStruct struct {
-	Message string `json:"message"`
-}
-
-type World struct {
-	Id           uint16 `json:"id" qbs:"pk"`
-	RandomNumber uint16 `json:"randomNumber"`
-}
-
-type Fortune struct {
-	Id      uint16 `json:"id" qbs:"pk"`
-	Message string `json:"message"`
-}
-
-const (
-	WorldRowCount      = 10000
-	MaxConnectionCount = 256
-)
-
-func init() {
-	revel.Filters = []revel.Filter{
-		revel.RouterFilter,
-		revel.ParamsFilter,
-		revel.ActionInvoker,
-	}
-	revel.OnAppStart(func() {
-		runtime.GOMAXPROCS(runtime.NumCPU())
-		db.Init()
-		qbs.ChangePoolSize(MaxConnectionCount)
-	})
-}
-
-type App struct {
-	*revel.Controller
-}
-
-func (c App) Db(queries int) revel.Result {
+func (c App) QbsDb(queries int) revel.Result {
 	qbs, _ := qbs.GetQbs()
 	defer qbs.Close()
 
@@ -71,7 +32,7 @@ func (c App) Db(queries int) revel.Result {
 	return c.RenderJson(ww)
 }
 
-func (c App) Update(queries int) revel.Result {
+func (c App) QbsUpdate(queries int) revel.Result {
 	qbs, _ := qbs.GetQbs()
 	defer qbs.Close()
 
@@ -102,7 +63,7 @@ func (c App) Update(queries int) revel.Result {
 	return c.RenderJson(ww)
 }
 
-func (c App) Fortune() revel.Result {
+func (c App) QbsFortune() revel.Result {
 	qbs, _ := qbs.GetQbs()
 	defer qbs.Close()
 
@@ -111,14 +72,6 @@ func (c App) Fortune() revel.Result {
 	fortunes = append(fortunes,
 		&Fortune{Message: "Additional fortune added at request time."})
 	sort.Sort(ByMessage{fortunes})
-	return c.Render(fortunes)
+	c.RenderArgs["fortunes"] = fortunes
+	return c.RenderTemplate("App/Fortune.html")
 }
-
-type Fortunes []*Fortune
-
-func (s Fortunes) Len() int      { return len(s) }
-func (s Fortunes) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
-
-type ByMessage struct{ Fortunes }
-
-func (s ByMessage) Less(i, j int) bool { return s.Fortunes[i].Message < s.Fortunes[j].Message }
