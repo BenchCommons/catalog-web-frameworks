@@ -1,18 +1,11 @@
 #!/bin/bash
 
-if [[ $LOGDIR == *postgres* ]] ; then
-  DBTYPE=postgresql
-else
-  DBTYPE=mysql
-fi
+. $(dirname $0)/config/common_run.sh
 
 fw_depends $DBTYPE rvm ruby-2.4
 
-rvm ruby-$MRI_VERSION do \
-  bundle install --jobs=4 --gemfile=$TROOT/Gemfile --path=vendor/bundle
+rvm use ruby-$MRI_VERSION
 
-export DBTYPE
-export MAX_CONCURRENCY # used by config/mri_puma.rb
+. $(dirname $0)/config/bundle_install.sh
 
-rvm ruby-$MRI_VERSION do \
-  bundle exec puma -C config/mri_puma.rb -b tcp://0.0.0.0:8080 -e production &
+bundle exec puma -C config/mri_puma.rb -b tcp://0.0.0.0:8080 -e production &
