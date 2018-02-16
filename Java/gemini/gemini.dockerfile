@@ -1,8 +1,5 @@
 FROM resin:latest
 
-RUN apt-get install -qqy -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" \
-    ant
-
 ADD Docroot/ /gemini/Docroot
 ADD Source/ /gemini/Source
 ADD build.xml /gemini/
