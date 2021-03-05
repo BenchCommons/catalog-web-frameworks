@@ -1,17 +1,17 @@
-FROM gradle:5.4.1-jdk11 as gradle
-USER root
+FROM maven:3.6.3-jdk-11-slim as maven
 WORKDIR /javalin
-COPY build.gradle build.gradle
 COPY src src
-RUN gradle --refresh-dependencies clean fatJar
+COPY pom.xml pom.xml
+RUN mvn clean package -q
+
+FROM openjdk:11.0.10-jdk-slim
+WORKDIR /javalin
+COPY --from=maven /javalin/target/javalin-1.0-shaded.jar app.jar
+
+ARG BENCHMARK_ENV
+
+ENV BENCHMARK_ENV=$BENCHMARK_ENV
 
 EXPOSE 8080
 
-CMD java \
-    -Xmx2G \
-    -Xms2G \
-    -server \
-    -XX:+UseNUMA \
-    -XX:+UseParallelGC \
-    -XX:+AggressiveOpts \
-    -jar build/libs/javalin-all-1.0-SNAPSHOT.jar env=prod
+CMD ["java", "-server", "-XX:+UseNUMA", "-XX:+UseParallelGC", "-Dlogging.level.root=OFF", "-jar", "app.jar"]
