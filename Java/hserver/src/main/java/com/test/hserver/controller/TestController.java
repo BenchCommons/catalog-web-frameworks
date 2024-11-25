@@ -3,11 +3,14 @@ package com.test.hserver.controller;
 import cn.hserver.core.ioc.annotation.Autowired;
 import cn.hserver.plugin.web.annotation.Controller;
 import cn.hserver.plugin.web.annotation.GET;
+import cn.hserver.plugin.web.interfaces.HttpRequest;
 import cn.hserver.plugin.web.interfaces.HttpResponse;
 import com.test.hserver.bean.Fortune;
 import com.test.hserver.bean.Message;
 import com.test.hserver.bean.World;
 import com.test.hserver.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -59,8 +62,8 @@ public class TestController {
     }
 
     @GET("/queries")
-    public void queries(String queries,HttpResponse response) throws Exception {
-        World[] result = new World[getQueries(queries)];
+    public void queries(HttpRequest request,HttpResponse response) throws Exception {
+        World[] result = new World[getQueries(request.query("queries"))];
         try (Connection conn = dataSource.getConnection()) {
             for (int i = 0; i < result.length; i++) {
                 try (final PreparedStatement statement = conn.prepareStatement(SELECT_WORLD)) {
@@ -78,8 +81,8 @@ public class TestController {
 
 
     @GET("/updates")
-    public void updates(String queries,HttpResponse response) throws Exception {
-        World[] result = new World[getQueries(queries)];
+    public void updates(HttpRequest request,HttpResponse response) throws Exception {
+        World[] result = new World[getQueries(request.query("queries"))];
         StringJoiner updateSql = new StringJoiner(
                 ", ",
                 "UPDATE world SET randomNumber = temp.randomNumber FROM (VALUES ",
