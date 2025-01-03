@@ -13,7 +13,7 @@ WORKDIR /rack
 COPY Gemfile ./
 
 ENV BUNDLE_FORCE_RUBY_PLATFORM=true
-RUN bundle config set without 'development test falcon unicorn'
+RUN bundle config set with 'puma'
 RUN bundle install --jobs=8
 
 COPY . .
