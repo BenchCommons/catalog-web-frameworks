@@ -78,6 +78,7 @@ GEM
 PLATFORMS
   ruby
   x86_64-darwin-23
+  x86_64-linux
 
 DEPENDENCIES
   activerecord (~> 8.0)
@@ -93,4 +94,4 @@ DEPENDENCIES
   unicorn (~> 6.1)
 
 BUNDLED WITH
-   2.5.16
+   2.6.2
