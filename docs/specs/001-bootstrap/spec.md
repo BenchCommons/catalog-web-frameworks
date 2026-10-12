@@ -130,7 +130,7 @@ The 160 upstream variants tagged `broken` are imported unchanged. They are exclu
 ## Out of scope
 
 - Running full benchmark rounds or publishing measurements of any kind.
-- The results website and any TFB-style results pages (website#5).
+- The results website and any TFB-style results pages ([website-results#5](https://github.com/BenchCommons/website-results/issues/5)).
 - Defining the catalog contract (benchmark-tool#29) or the input contract (dataset-tool#1).
 - Creating `dataset-web-databases` or forking TFBVerifier, TFBToolset or tfb-status.
 - Stage B and C verification (follow-up specs 002 and 003).
