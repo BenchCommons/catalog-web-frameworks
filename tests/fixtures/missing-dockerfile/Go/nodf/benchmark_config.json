@@ -1,0 +1,1 @@
+{"framework": "nodf", "tests": [{"default": {"json_url": "/json", "port": 8080, "database": "None"}}]}
