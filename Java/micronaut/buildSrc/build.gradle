@@ -1,0 +1,13 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    gradlePluginPortal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.micronaut.gradle:micronaut-gradle-plugin:4.6.2"
+    implementation "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin:9.3.1"
+}

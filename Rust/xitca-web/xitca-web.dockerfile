@@ -1,0 +1,14 @@
+FROM rust:1.93
+
+ADD ./ /xitca-web
+WORKDIR /xitca-web
+
+# for official run
+# RUN cargo build --release --bin xitca-web --features io-uring,pg,router,template,zero-copy,json
+
+# for continuous run
+RUN cargo build --release --bin xitca-web --features io-uring,pg,router,template,zero-copy,perf-json,perf-allocator
+
+EXPOSE 8080
+
+CMD ./target/release/xitca-web

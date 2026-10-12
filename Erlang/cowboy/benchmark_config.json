@@ -1,0 +1,26 @@
+{
+  "framework": "cowboy",
+  "tests": [{
+    "default": {
+      "plaintext_url": "/plaintext",
+      "json_url": "/json",
+      "db_url": "/db",
+      "query_url": "/query?queries=",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "MySQL",
+      "framework": "None",
+      "language": "Erlang",
+      "flavor": "None",
+      "orm": "Raw",
+      "platform": "beam",
+      "webserver": "cowboy",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "Cowboy",
+      "notes": "",
+      "tags": ["broken"],
+      "versus": ""
+  }}]
+}

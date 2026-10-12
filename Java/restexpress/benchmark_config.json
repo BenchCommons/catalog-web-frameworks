@@ -1,0 +1,47 @@
+{
+  "framework": "restexpress",
+  "tests": [{
+    "default": {
+      "json_url": "/json",
+      "plaintext_url": "/plaintext",
+      "db_url": "/db",
+      "query_url": "/query?queries=",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "MongoDB",
+      "framework": "rest-express",
+      "language": "Java",
+      "flavor": "None",
+      "orm": "Raw",
+      "platform": "Netty",
+      "webserver": "None",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "rest-express",
+      "notes": "",
+      "versus": "netty",
+      "tags": ["broken"]
+    },
+    "mysql-raw": {
+      "db_url": "/db",
+      "query_url": "/query?queries=",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "MySQL",
+      "framework": "rest-express",
+      "language": "Java",
+      "flavor": "None",
+      "orm": "Raw",
+      "platform": "Netty",
+      "webserver": "None",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "rest-express",
+      "notes": "",
+      "versus": "netty",
+      "tags": ["broken"]
+    }
+  }]
+}

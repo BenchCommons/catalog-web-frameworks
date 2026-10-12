@@ -1,0 +1,8 @@
+requires 'Mojolicious', '9.42';
+requires 'Mojo::Pg';
+requires 'Cpanel::JSON::XS';
+requires 'EV';
+
+recommends 'IO::Socket::IP';
+recommends 'IO::Socket::SSL';
+

@@ -1,0 +1,46 @@
+{
+  "framework": "plack",
+  "tests": [{
+    "default": {
+      "json_url": "/json",
+      "db_url": "/db",
+      "query_url": "/db?queries=",
+      "plaintext_url": "/plaintext",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "MySQL",
+      "framework": "plack",
+      "language": "Perl",
+      "orm": "Raw",
+      "platform": "Plack",
+      "webserver": "nginx",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "plack",
+      "notes": "",
+      "versus": "plack-async"
+    },
+    "async": {
+      "json_url": "/json",
+      "db_url": "/db",
+      "query_url": "/db?queries=",
+      "plaintext_url": "/plaintext",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "MySQL",
+      "framework": "plack",
+      "language": "Perl",
+      "orm": "Raw",
+      "platform": "AnyEvent",
+      "webserver": "nginx",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "plack-async",
+      "notes": "",
+      "tags": ["broken"],
+      "versus": "plack"
+    }
+  }]
+}

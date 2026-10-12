@@ -1,0 +1,33 @@
+database:
+  name: hello_world
+  host: tfb-database
+  port: 5432
+  username: benchmarkdbuser
+  password: benchmarkdbpass
+
+---
+spring:
+  config:
+    activate:
+      on-profile: r2dbc
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration,org.springframework.boot.autoconfigure.data.mongo.MongoReactiveDataAutoConfiguration
+  r2dbc:
+    username: ${database.username}
+    password: ${database.password}
+    url: r2dbc:postgresql://${database.host}:${database.port}/${database.name}?loggerLevel=OFF&disableColumnSanitiser=true&assumeMinServerVersion=16&sslmode=disable
+    pool:
+      max-size: 256
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mongo
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.r2dbc.R2dbcAutoConfiguration
+
+  data:
+    mongodb:
+      uri: mongodb://tfb-database:27017/?waitQueueMultiple=200
+      database: hello_world

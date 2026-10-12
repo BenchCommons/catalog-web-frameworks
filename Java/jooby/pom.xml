@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>jooby</artifactId>
+  <groupId>com.techempower</groupId>
+  <version>4.0</version>
+
+  <name>jooby</name>
+
+  <properties>
+    <jooby.version>4.0.11</jooby.version>
+    <dsl-json.version>2.0.2</dsl-json.version>
+    <postgresql.version>42.7.7</postgresql.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
+
+    <!-- Startup class -->
+    <application.class>com.techempower.App</application.class>
+  </properties>
+
+  <dependencies>
+    <!-- jdbc -->
+    <dependency>
+      <groupId>io.jooby</groupId>
+      <artifactId>jooby-hikari</artifactId>
+      <version>${jooby.version}</version>
+    </dependency>
+
+    <!-- rocker -->
+    <dependency>
+      <groupId>io.jooby</groupId>
+      <artifactId>jooby-rocker</artifactId>
+      <version>${jooby.version}</version>
+    </dependency>
+
+    <!-- postgresql -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql.version}</version>
+    </dependency>
+
+    <!-- vertx -->
+    <dependency>
+      <groupId>io.jooby</groupId>
+      <artifactId>jooby-vertx-pg-client</artifactId>
+      <version>${jooby.version}</version>
+    </dependency>
+
+    <!-- json -->
+    <dependency>
+      <groupId>com.dslplatform</groupId>
+      <artifactId>dsl-json</artifactId>
+      <version>${dsl-json.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>jooby</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.6.1</version>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.outputDirectory}${file.separator}generated-sources${file.separator}annotations</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.fizzed</groupId>
+        <artifactId>rocker-maven-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>generate-rocker-templates</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <templateDirectory>public</templateDirectory>
+              <touchFile>/dev/null</touchFile>
+              <optimize>true</optimize>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>io.jooby</groupId>
+              <artifactId>jooby-apt</artifactId>
+              <version>${jooby.version}</version>
+            </path>
+            <path>
+              <groupId>com.dslplatform</groupId>
+              <artifactId>dsl-json</artifactId>
+              <version>${dsl-json.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <!-- Build fat jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <id>uber-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <transformers>
+                <transformer
+                    implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer
+                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>${application.class}</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-resolver-dns-native-macos</artifactId>
+          <classifier>osx-aarch_64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>undertow</id>
+      <dependencies>
+        <dependency>
+          <groupId>io.jooby</groupId>
+          <artifactId>jooby-undertow</artifactId>
+          <version>${jooby.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>jetty</id>
+      <dependencies>
+        <dependency>
+          <groupId>io.jooby</groupId>
+          <artifactId>jooby-jetty</artifactId>
+          <version>${jooby.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>netty</id>
+      <dependencies>
+        <dependency>
+          <groupId>io.jooby</groupId>
+          <artifactId>jooby-netty</artifactId>
+          <version>${jooby.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>vertx</id>
+      <dependencies>
+        <dependency>
+          <groupId>io.jooby</groupId>
+          <artifactId>jooby-vertx</artifactId>
+          <version>${jooby.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.jooby</groupId>
+        <artifactId>jooby-bom</artifactId>
+        <version>${jooby.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

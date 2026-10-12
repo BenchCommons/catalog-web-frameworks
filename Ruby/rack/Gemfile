@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+# Show platform so we can set in the Gemfile
+puts "Platform: #{Gem::Platform.local}"
+
+gem 'rack', '~> 3.0'
+gem 'connection_pool'
+gem 'json'
+gem 'tzinfo-data', '1.2023.3'
+
+platforms :ruby, :windows do
+  gem 'pg', '~> 1.5', platforms: %i[ruby windows]
+end
+
+platforms :jruby do
+  gem 'jdbc-postgres', '~> 42.2', require: 'jdbc/postgres'
+  gem 'sequel'
+end
+
+group :falcon, optional: true do
+  gem 'falcon', '~> 0.52', platforms: %i[ruby windows]
+end
+
+group :iodine, optional: true do
+  gem 'iodine', '~> 0.7', platforms: %i[ruby windows]
+end
+
+group :itsi, optional: true do
+  gem 'itsi'
+end
+
+group :passenger, optional: true do
+  gem 'logger' # required by passenger on Ruby 4.0
+  gem 'passenger', '~> 6.1', platforms: [:ruby, :windows], require: false
+end
+
+group :pitchfork, optional: true do
+  gem 'pitchfork', '~> 0.17'
+end
+
+group :puma, optional: true do
+  gem 'puma', '~> 7.1'
+end
+
+group :development, optional: true do
+  gem 'rack-test'
+  gem 'rubocop', platforms: %i[ruby windows]
+end

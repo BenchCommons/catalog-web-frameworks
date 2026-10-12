@@ -1,0 +1,28 @@
+{
+  "framework": "http-kit",
+  "tests": [{
+    "default": {
+      "json_url": "/json",
+      "db_url": "/db",
+      "query_url": "/queries/",
+      "update_url": "/updates/",
+      "fortune_url": "/fortunes",
+      "plaintext_url": "/plaintext",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Platform",
+      "database": "MySQL",
+      "framework": "None",
+      "language": "Clojure",
+      "flavor": "None",
+      "orm": "Micro",
+      "platform": "Ring",
+      "webserver": "None",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "http-kit",
+      "notes": "",
+      "versus": ""
+    }
+  }]
+}
