@@ -14,7 +14,7 @@ One folder per language, one folder per framework, the same way `catalog-ssg` is
 └── … source of the implementation
 ```
 
-`benchmark_config.json` is the source of truth. `config.toml`, present in most upstream folders, is kept but not authoritative. Implementations follow the catalog contract owned by [benchmark-tool](https://github.com/BenchCommons/benchmark-tool) (spec 010, benchmark-tool#29).
+`benchmark_config.json` is the source of truth. `config.toml`, present in most upstream folders, is kept but not authoritative. Implementations follow the catalog contract owned by [tools-benchmark](https://github.com/BenchCommons/tools-benchmark) (spec 010, tools-benchmark#29).
 
 Languages: C C++ CFML Clojure Crystal CSharp D Dart Elixir Erlang Fortran FSharp Go Groovy Haskell Java JavaScript Julia Kotlin Lisp Lua Luau Nim OCaml Pascal Perl PHP Prolog Python R Racket Ruby Rust Scala Swift TypeScript Ur V Vala VB Zig 
 
