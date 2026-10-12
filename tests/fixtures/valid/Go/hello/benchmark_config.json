@@ -1,0 +1,29 @@
+{
+  "framework": "hello",
+  "tests": [{
+    "default": {
+      "json_url": "/json",
+      "plaintext_url": "/plaintext",
+      "db_url": "/db",
+      "port": 8080,
+      "database": "Postgres"
+    },
+    "alt": {
+      "json_url": "/json",
+      "port": "8081",
+      "database": "MySQL"
+    },
+    "custom": {
+      "plaintext_url": "/plaintext",
+      "port": 8080,
+      "database": "None",
+      "dockerfile": "custom.dockerfile"
+    },
+    "old": {
+      "json_url": "/json",
+      "port": 8080,
+      "database": "mongodb",
+      "tags": ["broken"]
+    }
+  }]
+}

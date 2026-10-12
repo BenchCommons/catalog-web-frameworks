@@ -1,0 +1,11 @@
+{
+  "framework": "dbonly",
+  "tests": [{
+    "default": {
+      "db_url": "/db",
+      "fortune_url": "/fortunes",
+      "port": 8080,
+      "database": "postgres"
+    }
+  }]
+}

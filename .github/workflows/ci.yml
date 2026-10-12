@@ -4,6 +4,14 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "17 3 * * 1" # weekly full stage-A verification (spec 001, R7.4)
+  workflow_dispatch:
+    inputs:
+      folders:
+        description: "Space-separated framework folders (e.g. 'Go/gin Rust/axum'); empty means the whole catalog"
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -15,3 +23,146 @@ jobs:
       # Implementation code (JSONC, BOMs, custom YAML tags) is checked by the catalog CI, not here.
       syntax-roots: "docs .github"
       link-globs: "'README.md' 'AGENTS.md' 'docs/**/*.md'"
+
+  metadata:
+    name: Metadata check and tooling tests
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9" # oldest supported version of tools/
+      - name: Metadata check (whole catalog)
+        run: python3 tools/catalog.py check
+      - name: Unit tests
+        run: python3 -m unittest discover -s tests -v
+
+  changed:
+    name: Changed folders and Dockerfile lint
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.changed.outputs.matrix }}
+      any: ${{ steps.changed.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # merge base with the PR base
+      - name: Lint changed Dockerfiles
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: python3 tools/catalog.py lint-docker --since "$BASE_SHA"
+      - name: Changed framework folders
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          python3 tools/catalog.py changed --since "$BASE_SHA"
+          json="$(python3 tools/catalog.py changed --since "$BASE_SHA" --json)"
+          echo "$json"
+          matrix="$(python3 -c 'import json,sys; print(json.dumps(json.loads(sys.argv[1])["matrix"]))' "$json")"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          if [ "$matrix" = "[]" ]; then echo "any=false"; else echo "any=true"; fi >> "$GITHUB_OUTPUT"
+
+  verify:
+    name: Verify ${{ matrix.target }} (stage A)
+    needs: changed
+    if: needs.changed.outputs.any == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.changed.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stop preinstalled database services
+        run: sudo systemctl stop mysql postgresql || true
+      - name: Verify
+        env:
+          TARGET: ${{ matrix.target }}
+        run: python3 tools/catalog.py verify "$TARGET" --stage A --summary summary.json
+      - name: Job summary
+        if: always()
+        run: |
+          if [ -f summary.json ]; then
+            python3 tools/catalog.py summarize summary.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  full-plan:
+    name: Plan full verification
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shards (one per language, or the requested folders)
+        id: plan
+        env:
+          FOLDERS: ${{ inputs.folders }}
+        run: |
+          matrix="$(python3 - <<'PY'
+          import json, os, subprocess
+          folders = os.environ.get("FOLDERS", "").split()
+          if not folders:
+              rows = json.loads(subprocess.check_output(
+                  ["python3", "tools/catalog.py", "list", "--json"]))
+              folders = sorted({r["language"] for r in rows})
+          print(json.dumps(folders))
+          PY
+          )"
+          echo "$matrix"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
+  full:
+    name: Full verify ${{ matrix.shard }} (stage A)
+    needs: full-plan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        shard: ${{ fromJSON(needs.full-plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Stop preinstalled database services
+        run: sudo systemctl stop mysql postgresql || true
+      - name: Artifact name
+        id: name
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: echo "name=summary-$(echo "$SHARD" | tr '/:' '--')" >> "$GITHUB_OUTPUT"
+      - name: Verify
+        env:
+          SHARD: ${{ matrix.shard }}
+        # --rmi keeps runner disk usage bounded across many builds.
+        run: python3 tools/catalog.py verify "$SHARD" --stage A --rmi --summary summary.json
+      - name: Upload shard summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.name.outputs.name }}
+          path: summary.json
+          if-no-files-found: warn
+
+  full-summary:
+    name: Full verification summary
+    needs: full
+    if: always() && needs.full.result != 'skipped'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: summary-*
+          path: shards
+      - name: Merge shard summaries
+        run: |
+          python3 tools/catalog.py summarize shards/*/summary.json --out full-summary.json >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-summary
+          path: full-summary.json
