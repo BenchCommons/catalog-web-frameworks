@@ -11,3 +11,7 @@ permissions:
 jobs:
   docs:
     uses: BenchCommons/.github/.github/workflows/docs-ci.yml@main
+    with:
+      # Implementation code (JSONC, BOMs, custom YAML tags) is checked by the catalog CI, not here.
+      syntax-roots: "docs .github"
+      link-globs: "'README.md' 'AGENTS.md' 'docs/**/*.md'"
