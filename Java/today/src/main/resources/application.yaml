@@ -1,0 +1,42 @@
+app:
+  name: benchmark-app
+
+server:
+  port: 8080
+  http2:
+    enabled: false
+  use-virtual-thread-service-executor: true
+  netty:
+    auto-read: ${server.http2.enabled}
+
+infra:
+  output:
+    ansi:
+      enabled: always
+
+freemarker:
+  cache: true
+  settings:
+    classic_compatible: true
+    date_format: yyyy-MM-dd
+    datetime_format: yyyy-MM-dd HH:mm:ss
+    default_encoding: UTF-8
+    locale: UTF-8
+    log_template_exceptions: false
+    number_format: 0.####
+    tag_syntax: auto_detect
+    template_exception_handler: ignore
+    template_update_delay: 0
+    time_format: HH:mm:ss
+    url_escaping_charset: UTF-8
+
+datasource:
+  name: 'app-datasource'
+  type: com.zaxxer.hikari.HikariDataSource
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  hikari:
+    maximum-pool-size: 256
+
+logging:
+  level:
+    root: OFF

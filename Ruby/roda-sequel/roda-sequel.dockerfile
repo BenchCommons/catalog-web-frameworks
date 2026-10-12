@@ -1,0 +1,22 @@
+FROM ruby:4.0
+
+ADD ./ /roda-sequel
+WORKDIR /roda-sequel
+
+ENV RUBY_YJIT_ENABLE=1
+
+# Use Jemalloc
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libjemalloc2
+ENV LD_PRELOAD=libjemalloc.so.2
+
+ENV BUNDLE_FORCE_RUBY_PLATFORM=true
+RUN bundle config set with 'mysql iodine'
+RUN bundle install --jobs=8
+
+ENV RACK_ENV=production
+ENV DBTYPE=mysql
+
+EXPOSE 8080
+
+CMD bundle exec iodine -p 8080 -w $(($(nproc)*5/4))

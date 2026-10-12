@@ -1,0 +1,153 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Json;
+using appMpower.Orm.Data;
+using appMpower.Orm.Objects;
+using appMpower.Orm.Serializers;
+
+namespace appMpower.Orm;
+
+#if AOTDLL
+
+public static class NativeMethods
+{
+    private static JsonWriterOptions _jsonWriterOptions = new JsonWriterOptions
+    {
+        Indented = false,
+        SkipValidation = true
+    };
+
+    private readonly static WorldSerializer _worldSerializer = new();
+    private readonly static WorldsSerializer _worldsSerializer = new();
+    private readonly static FortunesSerializer _fortunesSerializer = new();
+    private static readonly byte[] _delimiter = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
+
+    [UnmanagedCallersOnly(EntryPoint = "Dbms")]
+    public static void Dbms(int dbms)
+    {
+        Constants.Dbms = (Dbms)dbms;
+        DbFactory.SetConnectionString();
+        DbFactory.SetInstance();
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "DbProvider")]
+    public static void DbProvider(int dbProvider)
+    {
+        Constants.DbProvider = (DbProvider)dbProvider;
+        DbFactory.SetConnectionString();
+        DbFactory.SetInstance();
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "FreeHandlePointer")]
+    public static void FreeHandlePointer(IntPtr handlePointer)
+    {
+        GCHandle handle = GCHandle.FromIntPtr(handlePointer);
+        handle.Free();
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "Db")]
+    public static unsafe IntPtr Db(int* length, IntPtr* handlePointer)
+    {
+        var world = RawDb.LoadSingleQueryRow(); 
+
+        var memoryStream = new MemoryStream();
+        using (var utf8JsonWriter = new Utf8JsonWriter(memoryStream, _jsonWriterOptions))
+        {
+            _worldSerializer.Serialize(utf8JsonWriter, world);
+        }
+
+        // Flush everything to the MemoryStream
+        memoryStream.Flush();
+        byte[] buffer = memoryStream.GetBuffer();
+        int len = (int)memoryStream.Position;  // or (int)memoryStream.Length;
+
+        *length = len;
+
+        GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+        *handlePointer = GCHandle.ToIntPtr(handle);
+
+        return handle.AddrOfPinnedObject();
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "Fortunes")]
+    public static unsafe IntPtr Fortunes(int* length, IntPtr* handlePointer)
+    {
+        List<Fortune> fortunes = RawDb.LoadFortunesRows(); 
+        string fortunesView = FortunesView.Render(fortunes);
+        byte[] byteArray = Encoding.UTF8.GetBytes(fortunesView);
+
+        *length = byteArray.Length; 
+
+        GCHandle handle = GCHandle.Alloc(byteArray, GCHandleType.Pinned);
+        IntPtr byteArrayPointer = handle.AddrOfPinnedObject();
+        *handlePointer = GCHandle.ToIntPtr(handle);
+
+        return byteArrayPointer;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "Query")]
+    public static unsafe IntPtr Query(int queries, int* length, IntPtr* handlePointer)
+    {
+        World[] worlds = RawDb.ReadMultipleRows(queries);
+
+        var memoryStream = new MemoryStream();
+        using var utf8JsonWriter = new Utf8JsonWriter(memoryStream, _jsonWriterOptions);
+
+        _worldsSerializer.Serialize(utf8JsonWriter, worlds);
+
+        *length = (int)utf8JsonWriter.BytesCommitted;
+        byte[] byteArray = memoryStream.ToArray();
+
+        GCHandle handle = GCHandle.Alloc(byteArray, GCHandleType.Pinned);
+        IntPtr byteArrayPointer = handle.AddrOfPinnedObject();
+        *handlePointer = GCHandle.ToIntPtr(handle);
+
+        return byteArrayPointer;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "Updates")]
+    public static unsafe IntPtr Updates(int count, int* length, IntPtr* handlePointer)
+    {
+        World[] worlds = RawDb.LoadMultipleUpdatesRows(count);
+
+        var memoryStream = new MemoryStream();
+        using var utf8JsonWriter = new Utf8JsonWriter(memoryStream, _jsonWriterOptions);
+
+        _worldsSerializer.Serialize(utf8JsonWriter, worlds);
+
+        *length = (int)utf8JsonWriter.BytesCommitted;
+        byte[] byteArray = memoryStream.ToArray();
+
+        GCHandle handle = GCHandle.Alloc(byteArray, GCHandleType.Pinned);
+        IntPtr byteArrayPointer = handle.AddrOfPinnedObject();
+        *handlePointer = GCHandle.ToIntPtr(handle);
+
+        return byteArrayPointer;
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "DbById")]
+    public static unsafe IntPtr DbById(int id, int* length, IntPtr* handlePointer)
+    {
+        var world = RawDb.LoadSingleQueryRowById(id);
+
+        var memoryStream = new MemoryStream();
+        using var utf8JsonWriter = new Utf8JsonWriter(memoryStream, _jsonWriterOptions);
+
+        _worldSerializer.Serialize(utf8JsonWriter, world);
+
+        *length = (int)utf8JsonWriter.BytesCommitted;
+        byte[] byteArray = memoryStream.ToArray();
+
+        GCHandle handle = GCHandle.Alloc(byteArray, GCHandleType.Pinned);
+        IntPtr byteArrayPointer = handle.AddrOfPinnedObject();
+        *handlePointer = GCHandle.ToIntPtr(handle);
+
+        return byteArrayPointer;
+    }
+}
+
+#endif

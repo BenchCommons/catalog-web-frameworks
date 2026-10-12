@@ -1,0 +1,2 @@
+https://github.com/cirospaciari/socketify.py/archive/refs/heads/main.zip#egg=socketify
+ujson

@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+// compiler options
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+mainClassName = 'app.BenchmarkMain'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Framework
+    def framework_version = '1.0.0'
+    implementation "net.javapla.jawn:jawn:${framework_version}"
+    implementation "net.javapla.jawn:jawn-database-hikari:${framework_version}"
+    
+
+
+    // Database
+    compile 'org.postgresql:postgresql:42.2.8'
+}
+
+/* ****************** */
+/*    Application     */
+/* ****************** */
+application {
+    applicationDefaultJvmArgs = ['-server', '-XX:+UseParallelGC','-XX:+UseNUMA', '-XX:+UseStringDeduplication','-Xms4g', '-Xmx4g']
+}

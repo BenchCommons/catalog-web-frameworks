@@ -1,0 +1,69 @@
+[package]
+name = "tfb-actix"
+version = "4.0.0"
+edition = "2024"
+
+[[bin]]
+name = "tfb-web"
+path = "src/main_web.rs"
+
+[[bin]]
+name = "tfb-web-diesel"
+path = "src/main_web_diesel.rs"
+
+[[bin]]
+name = "tfb-http"
+path = "src/main_http.rs"
+
+[[bin]]
+name = "tfb-server"
+path = "src/main_server.rs"
+
+[[bin]]
+name = "tfb-web-mongodb"
+path = "src/main_mongodb.rs"
+
+[[bin]]
+name = "tfb-web-pg-deadpool"
+path = "src/main_pg_deadpool.rs"
+
+[dependencies]
+anyhow = "1.0.96"
+actix = "0.13.5"
+actix-web = "4.9.0"
+actix-http = "3.9.0"
+actix-rt = "2.10.0"
+actix-codec = "0.5"
+actix-server = "2"
+actix-service = "2"
+
+askama = "0.12"
+bytes = "1"
+diesel = { version = "2.2.7", features = ["postgres"] }
+env_logger = "0.11"
+futures = "0.3.31"
+log = { version = "0.4", features = ["release_max_level_debug"] }
+num_cpus = "1.13"
+rand = { version = "0.9", features = ["small_rng"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+simd-json = "0.14"
+simd-json-derive = "0.15"
+snmalloc-rs = "0.3.8"
+tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7.13"
+tokio-postgres = "0.7.13"
+deadpool-postgres = "0.14.1"
+mongodb = "3.2.5"
+url = "2.5"
+v_htmlescape = "0.15"
+yarte = { version = "0.15", features = ["bytes-buf"] }
+
+[build-dependencies]
+askama = "0.12"
+bindgen = "0.71"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1

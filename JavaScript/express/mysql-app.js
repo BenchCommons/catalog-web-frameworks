@@ -1,0 +1,131 @@
+
+/**
+ * Module dependencies.
+ */
+
+const cluster = require('cluster'),
+  numCPUs = require('os').cpus().length,
+  express = require('express'),
+  Sequelize = require('sequelize');
+
+const sequelize = new Sequelize('hello_world', 'benchmarkdbuser', 'benchmarkdbpass', {
+  host: 'tfb-database',
+  dialect: 'mysql',
+  logging: false,
+  pool: {
+    max: 50,
+    min: 0,
+    idle: 10000
+  }
+});
+
+const World = sequelize.define('world', {
+  id: {
+    type: 'Sequelize.INTEGER',
+    primaryKey: true
+  },
+  randomNumber: {
+    type: 'Sequelize.INTEGER'
+  }
+}, {
+    timestamps: false,
+    freezeTableName: true
+  });
+
+const Fortune = sequelize.define('Fortune', {
+  id: {
+    type: 'Sequelize.INTEGER',
+    primaryKey: true
+  },
+  message: {
+    type: 'Sequelize.STRING'
+  }
+}, {
+    timestamps: false,
+    freezeTableName: true
+  });
+
+if (cluster.isPrimary) {
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) =>
+    console.log('worker ' + worker.pid + ' died'));
+} else {
+  const app = module.exports = express();
+
+  app.set('x-powered-by', false);
+  app.set('etag', false)
+
+  app.set('view engine', 'pug');
+  app.set('views', __dirname + '/views');
+
+  // Routes
+  app.get('/mysql-orm-query', async (req, res) => {
+   
+    const queries = Math.min(parseInt(req.query.queries) || 1, 500);
+    const results = new Array(queries);
+
+    for (let i = 1; i <= queries; i++) {
+      const world = await World.findOne({
+        where: {
+          id: Math.floor(Math.random() * 10000) + 1
+        }
+      }
+      );
+      results[i - 1] = world;
+    }
+
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Server", "Express");
+    res.send(results);
+  });
+
+  app.get('/mysql-orm', async (req, res) => {
+    const world = await World.findOne({
+      where: {
+        id: Math.floor(Math.random() * 10000) + 1
+      }
+    }
+    );
+
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Server", "Express");
+    res.send(world)
+  });
+
+  app.get('/mysql-orm-fortune', async(req, res) => {
+    const fortunes = await Fortune.findAll()
+    const newFortune = { id: 0, message: "Additional fortune added at request time." };
+    fortunes.push(newFortune);
+    fortunes.sort((a, b) => (a.message < b.message) ? -1 : 1);
+
+    res.setHeader("Server", "Express");
+    res.render('fortunes/index', { fortunes: fortunes });
+  });
+
+  app.get('/mysql-orm-update', async (req, res) => {
+    const queries = Math.min(parseInt(req.query.queries) || 1, 500);
+    const results = new Array(queries);
+
+    for (let i = 1; i <= queries; i++) {
+      const world = await World.findOne({
+        where: {
+          id: ~~(Math.random() * 10000) + 1
+        }
+      }
+      );
+      world.randomNumber = ~~(Math.random() * 10000) + 1;
+      await world.save();
+      results[i - 1] = world;
+    }
+
+    res.setHeader("Server", "Express");
+    res.send(results);
+  });
+
+  const server = app.listen(8080);
+  server.keepAliveTimeout = 0;
+}

@@ -1,0 +1,24 @@
+name: amber
+version: 0.2.0
+
+authors:
+  - Amber Team and Contributors <amberframework.org>
+
+license: MIT
+
+targets:
+  amber:
+    main: src/amber.cr
+
+dependencies:
+  amber:
+    github: amberframework/amber
+    version: 1.4.1
+
+  pg:
+    github: will/crystal-pg
+    version: "= 0.26.0"
+
+  granite:
+    github: amberframework/granite
+    version: 0.23.3

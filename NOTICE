@@ -1,0 +1,13 @@
+catalog-web-frameworks
+Copyright (c) 2026, BenchCommons contributors
+
+This repository contains framework implementations imported from
+TechEmpower/FrameworkBenchmarks (https://github.com/TechEmpower/FrameworkBenchmarks),
+commit 57d92fbec6f8fd7431bc77326dd0484e60c96e20, archived by TechEmpower, Inc.
+after the project was sunset on 2026-03-24.
+
+Those files are Copyright (c) TechEmpower, Inc. and contributors and are
+distributed under the BSD-3-Clause license in LICENSE-TechEmpower.
+
+BenchCommons continues the archived TechEmpower Framework Benchmarks. It is
+not affiliated with, sponsored by or endorsed by TechEmpower, Inc.

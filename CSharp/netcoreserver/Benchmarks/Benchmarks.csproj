@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+
+    <TargetFramework>net9.0</TargetFramework>
+    <LangVersion>13.0</LangVersion>
+
+    <AssemblyTitle>EmbedIO Benchmarks</AssemblyTitle>
+    <Description>Test suite to be executed with TechEmpower FrameworkBenchmarks.</Description>
+
+    <StartupObject>Benchmarks.Program</StartupObject>
+    <OutputType>Exe</OutputType>
+
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <TieredCompilation>false</TieredCompilation>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetCoreServer" Version="8.0.7" />
+    <PackageReference Include="System.Text.Json" Version="9.0.10" />
+  </ItemGroup>
+
+</Project>

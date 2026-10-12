@@ -1,0 +1,27 @@
+{
+  "framework": "fuel",
+  "tests": [{
+    "default": {
+      "json_url": "/json",
+      "db_url": "/db",
+      "query_url": "/dbquery?queries=",
+      "fortune_url": "/fortunes",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Micro",
+      "database": "MySQL",
+      "framework": "Fuel",
+      "language": "PHP",
+      "flavor": "PHP8",
+      "orm": "Raw",
+      "platform": "FPM/FastCGI",
+      "webserver": "nginx",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "fuel",
+      "notes": "",
+      "tags": ["broken"],
+      "versus": "php"
+    }
+  }]
+}

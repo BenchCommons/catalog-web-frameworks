@@ -1,0 +1,43 @@
+{
+  "framework": "servlet3",
+  "tests": [{
+    "default": {
+      "json_url": "/json",
+      "plaintext_url": "/plaintext",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification": "Platform",
+      "database": "None",
+      "framework": "None",
+      "language": "Java",
+      "orm": "Raw",
+      "platform": "Servlet",
+      "webserver": "Tomcat",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "servlet3",
+      "notes": "Servlet 3.1 Async I/O",
+      "tags": ["broken"],
+      "versus": "servlet"
+    },
+    "sync": {
+      "json_url": "/json",
+      "plaintext_url": "/plaintext",
+      "port": 8080,
+      "approach": "Realistic",
+      "classification" : "Platform",
+      "database": "None",
+      "framework": "None",
+      "language": "Java",
+      "orm": "Raw",
+      "platform": "Servlet",
+      "webserver": "Tomcat",
+      "os": "Linux",
+      "database_os": "Linux",
+      "display_name": "servlet3",
+      "notes": "",
+      "tags": ["broken"],
+      "versus": "servlet"
+    }
+  }]
+}
