@@ -149,6 +149,11 @@ class LintDockerfileTest(unittest.TestCase):
             """
         self.assertEqual(self.lint(text), [])
 
+    def test_bom_before_first_from_is_ignored(self):
+        text = "\ufeffFROM debian:12 AS base\nFROM base AS final\n"
+        self.assertEqual(self.lint(text), [])
+        self.assertEqual(len(self.lint("\ufeffFROM debian\n")), 1)
+
     def test_alias_must_be_defined_before_use(self):
         problems = self.lint("FROM base\nFROM debian:12 AS base\n")
         self.assertEqual([p[0] for p in problems], [1])

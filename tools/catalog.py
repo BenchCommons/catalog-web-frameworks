@@ -337,7 +337,7 @@ def cmd_changed(args) -> int:
     return 0
 
 
-FROM_RE = re.compile(r"^\s*FROM\s+(.*)$", re.IGNORECASE)
+FROM_RE = re.compile(r"^[\s\ufeff]*FROM\s+(.*)$", re.IGNORECASE)  # a BOM can precede line 1
 
 
 def dockerfile_lines(text: str) -> List[tuple]:
