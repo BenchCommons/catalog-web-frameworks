@@ -4,7 +4,7 @@ Issue: #9. Related: #6 (Stage A database), #1, [tools-benchmark#29](https://gith
 
 ## Context
 
-At `9b58ea110`, `python3 tools/catalog.py lint-docker --all` exits 1 with 39 problems: 14 `:latest` and 25 untagged references, in 36 Dockerfiles. The PR workflow only lints changed files, so the backlog never failed CI. 38 of the 39 are real unpinned references. The 39th, `FROM base AS final` in `CSharp/celerio/celerio.dockerfile`, is a false positive: the file starts with a byte order mark, so the linter did not see its first `FROM ... AS base` and did not register the alias.
+At `9b58ea110`, `python3 tools/catalog.py lint-docker --all` exits 1 with 39 problems: 14 `:latest` and 25 untagged references, in 38 Dockerfiles (37 with a real unpinned reference, one of them with two). The PR workflow only lints changed files, so the backlog never failed CI. 38 of the 39 are real unpinned references. The 39th, `FROM base AS final` in `CSharp/celerio/celerio.dockerfile`, is a false positive: the file starts with a byte order mark, so the linter did not see its first `FROM ... AS base` and did not register the alias.
 
 ## Requirements
 
