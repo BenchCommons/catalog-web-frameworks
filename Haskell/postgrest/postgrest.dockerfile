@@ -1,6 +1,6 @@
-FROM postgrest/postgrest:latest AS builder
+FROM postgrest/postgrest:v16.6@sha256:5ce030c153500fe90ba157da4da8ba99ab51d3bc7b95e071bd0b544b67a632f7 AS builder
 
-FROM alpine
+FROM alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
 RUN apk add postgresql-client bash
 
 COPY --from=builder /bin/postgrest /usr/local/bin/postgrest

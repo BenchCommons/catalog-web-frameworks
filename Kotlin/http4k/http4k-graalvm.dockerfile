@@ -23,7 +23,7 @@ RUN native-image \
     --initialize-at-build-time="org.slf4j.LoggerFactory,org.slf4j.simple.SimpleLogger,org.slf4j.impl.StaticLoggerBinder" \
     -cp /home/app/http4k-graalvm/http4k-benchmark.jar Http4kGraalVMBenchmarkServerKt
 
-FROM frolvlad/alpine-glibc
+FROM frolvlad/alpine-glibc:alpine-3.22_glibc-2.42@sha256:9426ac50f45d895c00accfa2a8aca686749783061ae2075f99de1bc01b521d0b
 COPY --from=graalvm /app/http4kgraalvmbenchmarkserverkt /http4kgraalvmbenchmarkserverkt
 EXPOSE 9000
 ENTRYPOINT ["/http4kgraalvmbenchmarkserverkt"]

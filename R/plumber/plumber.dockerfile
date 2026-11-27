@@ -1,4 +1,4 @@
-FROM rstudio/plumber
+FROM rstudio/plumber:v1.3.0@sha256:e34ec5f792bca95cd815688af083bcf5929efcecc9736f130abcbbcfb28ca58f
 
 RUN apt-get update
 

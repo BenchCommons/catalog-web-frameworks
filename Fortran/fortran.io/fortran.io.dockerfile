@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:1.31@sha256:6a3df739b6312289e87d70947d900669c1b3087474ece5814b9c01bbf2e6dde3
 
 RUN apt-get -y update
 RUN apt-get -y upgrade

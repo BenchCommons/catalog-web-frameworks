@@ -1,4 +1,4 @@
-FROM nixos/nix
+FROM nixos/nix:2.36.0@sha256:746280551ddc1c72177d1a597c05eacac86dfaa18d5d649bf86411278bcd5470
 
 # Add build dependencies
 RUN nix-env -f https://github.com/NixOS/nixpkgs/archive/54b4bb956f9891b872904abdb632cea85a033ff2.tar.gz -iA cachix
