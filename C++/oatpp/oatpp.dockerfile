@@ -1,4 +1,4 @@
-FROM lganzzzo/ubuntu-cmake-mimalloc
+FROM lganzzzo/ubuntu-cmake-mimalloc@sha256:50e335bedcc35bf345f8ea15e9b11647d5a68099641d70e1ca8f23000f870c2e
 
 #---------------------------------------------------------------
 # install oatpp

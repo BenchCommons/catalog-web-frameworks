@@ -14,7 +14,7 @@ RUN cargo build --release
 
 ##########################################################
 
-FROM gcr.io/distroless/cc-debian12
+FROM gcr.io/distroless/cc-debian12@sha256:e5d81ddde149641e2a9ba55be4545bc125c67de07508b03ba4c22e6eb0ded5aa
 ENV DATABASE_URL=postgres://benchmarkdbuser:benchmarkdbpass@tfb-database/hello_world
 ENV MAX_CONNECTIONS=56
 ENV MIN_CONNECTIONS=56

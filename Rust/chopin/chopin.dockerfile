@@ -20,7 +20,7 @@ ENV RUSTFLAGS="-C target-cpu=native"
 ENV REUSEPORT=true
 RUN cargo build --release -p chopin-benchmark
 
-FROM gcr.io/distroless/cc-debian12
+FROM gcr.io/distroless/cc-debian12@sha256:e5d81ddde149641e2a9ba55be4545bc125c67de07508b03ba4c22e6eb0ded5aa
 
 # Chopin config: Config::from_env() reads these environment variables
 ENV SERVER_HOST=0.0.0.0

@@ -1,4 +1,4 @@
-FROM dlangdockerized/ldc
+FROM dlangdockerized/ldc:1.43.0@sha256:f2bdf2a920dbf8ce00ee4d848fb9d0c0f7d759e376aec4cec6aa549fcb8b20d6
 
 
 WORKDIR /app

@@ -1,4 +1,4 @@
-FROM nimlang/nim:latest
+FROM nimlang/nim:2.2@sha256:34bbc4d3d84137fd5da9ce50313268aaac48a7390185264027be0f3cf20848d9
 
 ADD ./ /nimstdlib
 

@@ -12,7 +12,7 @@ COPY ./src/ /build/src
 ENV RUSTFLAGS "-C target-cpu=native"
 RUN cargo build --release
 
-FROM gcr.io/distroless/cc-debian12
+FROM gcr.io/distroless/cc-debian12@sha256:e5d81ddde149641e2a9ba55be4545bc125c67de07508b03ba4c22e6eb0ded5aa
 ENV POSTGRES_URL=postgres://benchmarkdbuser:benchmarkdbpass@tfb-database/hello_world
 ENV POSTGRES_MIN_POOL_SIZE=56
 ENV POSTGRES_MAX_POOL_SIZE=56

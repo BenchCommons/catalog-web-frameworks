@@ -13,7 +13,7 @@ WORKDIR /app
 COPY techempower.js util.js tfb.config.js ./
 RUN just build --clean --cleanall --static techempower.js
 
-FROM gcr.io/distroless/static:latest
+FROM gcr.io/distroless/static@sha256:4c2cd1dee442c9a99924a378c7c126fac8fef14771579ef567c3f2bdd7a5122a
 WORKDIR /app
 COPY --from=builder /app/techempower /app/techempower
 COPY fortunes.html /app/fortunes.html
